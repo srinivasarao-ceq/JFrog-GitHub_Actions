@@ -1,4 +1,4 @@
-name: Jfrog intehrate with GitHub actions
+name: Jfrog integrate with GitHub actions
 on:
   workflow_dispatch
 
