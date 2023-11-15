@@ -34,4 +34,4 @@ jobs:
           jf audit 
 
       - name: Plan Terraform
-        run: terraform plan -out=tfplan
+        run: terraform plan 
