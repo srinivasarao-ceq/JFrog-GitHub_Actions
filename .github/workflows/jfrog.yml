@@ -39,18 +39,16 @@ jobs:
         id: jfrog-scan
         run: |
           jf audit --watches "demo" 
-        continue-on-error: true
       
       - name: Check JFrog Scan Results
         run: |
-          if grep -qE "High|Medium" <<< "${{ steps.jfrog-scan.outputs.stdout }}"; then
-            echo "High or Medium severity vulnerabilities found. Stopping Terraform plan."
+          if grep -qE "Found [1-9][0-9]* IaC vulnerabilities" <<< "${{ steps.jfrog-scan.outputs.stdout }}"; then
+            echo "Found IaC vulnerabilities. Stopping Terraform plan."
             exit 1
           else
-            echo "No high or medium severity vulnerabilities found. Proceeding with Terraform plan."
+            echo "No non-zero IaC vulnerabilities found. Proceeding with Terraform plan."
           fi
 
       - name: Plan Terraform
-        if: success()
         run: terraform plan 
 
