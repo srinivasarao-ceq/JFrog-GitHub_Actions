@@ -32,20 +32,25 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
 
-      - name: list
-        run: ls
-
       - name: Initialize Terraform
         run: terraform init
       
       - name: Run JFrog Scan
+        id: jfrog-scan
         run: |
           jf audit --watches "demo" 
+        continue-on-error: true
       
-      - name: list
-        run: ls
-
+      - name: Check JFrog Scan Results
+        run: |
+          if [[ "$(grep -c 'Found [1-9][0-9]* vulnerabilities' ${{ steps.jfrog-scan.outputs.stdout }})" -gt "0" ]]; then
+            echo "Vulnerabilities found. Stopping Terraform plan."
+            exit 1
+          else
+            echo "No vulnerabilities found. Proceeding with Terraform plan."
+          fi
 
       - name: Plan Terraform
+        if: success()
         run: terraform plan 
 
