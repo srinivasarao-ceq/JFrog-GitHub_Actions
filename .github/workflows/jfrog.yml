@@ -46,9 +46,9 @@ jobs:
           if grep -qE "Found [1-9][0-9]* IaC vulnerabilities" <<< "${{ steps.jfrog-scan.outputs.stdout }}"; then
             echo "Found IaC vulnerabilities. Stopping Terraform plan."
             exit 1
-          # else
-          #   echo "No non-zero IaC vulnerabilities found. Proceeding with Terraform plan."
-          # fi
+          else
+            echo "No non-zero IaC vulnerabilities found. Proceeding with Terraform plan."
+          fi
 
       - name: Plan Terraform
         if: failure()
