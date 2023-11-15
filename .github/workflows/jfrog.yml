@@ -38,7 +38,7 @@ jobs:
       - name: Run JFrog Scan
         id: jfrog-scan
         run: |
-          jf audit --watches "demo" --fail false
+          jf audit --watches "demo" --format "json"
   
       
       - name: Check JFrog Scan Results
