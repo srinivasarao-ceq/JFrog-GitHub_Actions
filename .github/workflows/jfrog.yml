@@ -52,4 +52,7 @@ jobs:
       - name: Plan Terraform
         if: failure()
         run: terraform plan 
-
+      
+      - name: Apply Terraform
+        if: steps.terraform-plan.outcome == 'success'  # Only run if Terraform plan is successful
+        run: terraform apply -auto-approve
