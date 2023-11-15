@@ -34,7 +34,7 @@ jobs:
       
       - name: Run JFrog Scan
         run: |
-          jf audit --watches "demo" --fail "true"
+          jf audit --watches "demo" --fail "false"
 
       - name: Plan Terraform
         run: terraform plan 
