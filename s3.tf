@@ -17,4 +17,4 @@ resource "aws_s3_bucket" "my_bucket" {
     Owner       = "Maddila.Srinivasa@cloudeq.com"
   }
 }
-}
+

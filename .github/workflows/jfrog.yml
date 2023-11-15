@@ -6,7 +6,7 @@ jobs:
   Jfrog-configuration:
     runs-on: ubuntu-latest
     steps:
-      - name: configure Jfrog
+      - name: configure Jfrog CLI
         uses: jfrog/setup-jfrog-cli@v3
         env:
           # JFrog platform url (for example: https://acme.jfrog.io) 
@@ -16,5 +16,22 @@ jobs:
           JF_USER: ${{ secrets.JF_USER }}
           JF_PASSWORD: ${{ secrets.JF_PASSWORD }}
        
-      - run: |
-          jf rt ping
+      - name: AWS CLI configuration
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ inputs.region }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Initialize Terraform
+        run: terraform init
+      
+      - name: Run JFrog Scan
+        run: |
+          jf audit 
+
+      - name: Plan Terraform
+        run: terraform plan -out=tfplan
