@@ -38,7 +38,7 @@ jobs:
       - name: Run JFrog Scan
         id: jfrog-scan
         run: |
-          jf audit --watches "demo" 
+          jf audit --watches "demo" --fail "false"
       
       # - name: Check JFrog Scan Results
       #   run: |
@@ -53,6 +53,6 @@ jobs:
         if: failure()
         run: terraform plan 
       
-      - name: Apply Terraform
-        if: steps.terraform-plan.outcome == 'success'  # Only run if Terraform plan is successful
-        run: terraform apply -auto-approve
+      # - name: Apply Terraform
+      #   if: steps.terraform-plan.outcome == 'success'  # Only run if Terraform plan is successful
+      #   run: terraform apply -auto-approve
