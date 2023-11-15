@@ -43,7 +43,7 @@ jobs:
       
       - name: Check JFrog Scan Results
         run: |
-          if [ $? -ne 0 ];<<< "${{ steps.jfrog-scan.outputs.stdout }}"; then
+          if [ $? -ne 0 ] <<< "${{ steps.jfrog-scan.outputs.stdout }}"; then
           # if grep -qE "Found [1-9][0-9]* IaC vulnerabilities" <<< "${{ steps.jfrog-scan.outputs.stdout }}"; then
             echo "Found IaC vulnerabilities. Stopping Terraform plan."
             exit 1
