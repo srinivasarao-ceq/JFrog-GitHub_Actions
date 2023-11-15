@@ -30,21 +30,17 @@ jobs:
         uses: hashicorp/setup-terraform@v1
 
       - name: list
-        run: |
-          ls
-          pwd
+        run: ls
 
       - name: Initialize Terraform
         run: terraform init
       
       - name: Run JFrog Scan
         run: |
-          jf audit --watches "demo" --fail "false"
+          jf audit --watches "demo" 
       
       - name: list
-        run: |
-          ls
-          pwd
+        run: ls
 
 
       - name: Plan Terraform
