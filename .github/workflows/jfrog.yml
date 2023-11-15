@@ -39,19 +39,17 @@ jobs:
         id: jfrog-scan
         run: |
           jf audit --watches "demo" --fail false
-          if [ $? -ne 0 ]; then
-            echo "Vulnerabilities found, failing the workflow."
-            exit 1
-          fi
+  
       
-      # - name: Check JFrog Scan Results
-      #   run: |
-      #     if grep -qE "Found [1-9][0-9]* IaC vulnerabilities" <<< "${{ steps.jfrog-scan.outputs.stdout }}"; then
-      #       echo "Found IaC vulnerabilities. Stopping Terraform plan."
-      #       exit 1
-      #     else
-      #       echo "No non-zero IaC vulnerabilities found. Proceeding with Terraform plan."
-      #     fi
+      - name: Check JFrog Scan Results
+        run: |
+          if [ $? -ne 0 ];<<< "${{ steps.jfrog-scan.outputs.stdout }}"; then
+          # if grep -qE "Found [1-9][0-9]* IaC vulnerabilities" <<< "${{ steps.jfrog-scan.outputs.stdout }}"; then
+            echo "Found IaC vulnerabilities. Stopping Terraform plan."
+            exit 1
+          # else
+          #   echo "No non-zero IaC vulnerabilities found. Proceeding with Terraform plan."
+          # fi
 
       - name: Plan Terraform
         if: failure()
