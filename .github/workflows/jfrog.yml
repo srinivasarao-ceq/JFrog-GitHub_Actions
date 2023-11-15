@@ -39,6 +39,10 @@ jobs:
         id: jfrog-scan
         run: |
           jf audit --watches "demo" --fail false
+          if [ $? -ne 0 ]; then
+            echo "Vulnerabilities found, failing the workflow."
+            exit 1
+          fi
       
       # - name: Check JFrog Scan Results
       #   run: |
