@@ -55,7 +55,7 @@ jobs:
         id: check_iac_vulnerabilities
         run: |
           # Extract the relevant part of the output
-          iac_output=$(echo "${{ steps.my_step.outputs.results }}" | grep -A 5 "Infrastructure as Code Vulnerabilities")
+          iac_output=$(echo "${{ steps.jfrog-scan.outputs.results }}" | grep -A 5 "Infrastructure as Code Vulnerabilities")
           
           # Check for High severity
           if echo "${iac_output}" | grep -q "High"; then
