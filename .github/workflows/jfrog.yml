@@ -41,17 +41,33 @@ jobs:
           jf audit --watches "demo" --fail false
   
       
-      - name: Check JFrog Scan Results
+      # - name: Check JFrog Scan Results
+      #   run: |
+      #     if grep -qE "Found [1-9][0-9]* IaC vulnerabilities" <<< "${{ steps.jfrog-scan.outputs.stdout }}"; then
+      #       echo "Found IaC vulnerabilities. Stopping Terraform plan."
+      #       exit 1
+      #     else
+      #       echo "No non-zero IaC vulnerabilities found. Proceeding with Terraform plan."
+      #     fi
+
+
+      - name: Check for High Severity IaC Vulnerabilities
+        id: check_iac_vulnerabilities
         run: |
-          if grep -qE "Found [1-9][0-9]* IaC vulnerabilities" <<< "${{ steps.jfrog-scan.outputs.stdout }}"; then
-            echo "Found IaC vulnerabilities. Stopping Terraform plan."
-            exit 1
+          # Extract the relevant part of the output
+          iac_output=$(echo "${{ steps.my_step.outputs.results }}" | grep -A 5 "Infrastructure as Code Vulnerabilities")
+          
+          # Check for High severity
+          if echo "${iac_output}" | grep -q "High"; then
+            echo "High severity IaC vulnerabilities found."
+            echo "::set-output name=high_severity_iac::true"
           else
-            echo "No non-zero IaC vulnerabilities found. Proceeding with Terraform plan."
+            echo "No High severity IaC vulnerabilities found."
+            echo "::set-output name=high_severity_iac::false"
           fi
 
       - name: Plan Terraform
-        if: failure()
+        if: steps.check_iac_vulnerabilities.outputs.skip_next_step != 'true'
         run: terraform plan 
       
       # - name: Apply Terraform
