@@ -41,8 +41,8 @@ jobs:
       - name: Run JFrog Scan
         id: jfrog-scan
         run: |
-           jf audit --watches "demo" > jfrog_output.txt
-           echo "::set-output name=jfrog_output::$(cat jfrog_output.txt)"
+           jf audit --watches "demo" >> "$GITHUB_OUTPUT"
+    
            
 
   Check_vulnerabilities:
