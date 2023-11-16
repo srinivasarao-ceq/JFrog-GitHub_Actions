@@ -51,7 +51,7 @@ jobs:
       - env:
           OUTPUT1: ${{needs.Jfrog-configuration.outputs.output1}}
         run: |
-          if grep qE "Found [1-9][0-9]* IaC vulnerabilities" "$OUTPUT1"; then
+          if grep -q "High/Medium" "$OUTPUT1"; then
             echo "Success: The word 'IaC vulnerabilities' was found in '$file'."
             exit 1
           else
