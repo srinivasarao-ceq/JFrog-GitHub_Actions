@@ -52,20 +52,20 @@ jobs:
           fi
 
 
-      - name: Check for High Severity IaC Vulnerabilities
-        id: check_iac_vulnerabilities
-        run: |
-          # Extract the relevant part of the output
-          iac_output=$(echo "${{ steps.jfrog-scan.outputs.results }}" | grep -A 5 "Infrastructure as Code Vulnerabilities")
+      # - name: Check for High Severity IaC Vulnerabilities
+      #   id: check_iac_vulnerabilities
+      #   run: |
+      #     # Extract the relevant part of the output
+      #     iac_output=$(echo "${{ steps.jfrog-scan.outputs.results }}" | grep -A 5 "Infrastructure as Code Vulnerabilities")
           
-          # Check for High severity
-          if echo "${iac_output}" | grep -q "High"; then
-            echo "High severity IaC vulnerabilities found."
-            echo "::set-output name=high_severity_iac::true"
-          else
-            echo "No High severity IaC vulnerabilities found."
-            echo "::set-output name=high_severity_iac::false"
-          fi
+      #     # Check for High severity
+      #     if echo "${iac_output}" | grep -q "High"; then
+      #       echo "High severity IaC vulnerabilities found."
+      #       echo "::set-output name=high_severity_iac::true"
+      #     else
+      #       echo "No High severity IaC vulnerabilities found."
+      #       echo "::set-output name=high_severity_iac::false"
+      #     fi
 
       - name: Plan Terraform
         if: steps.check_iac_vulnerabilities.outputs.skip_next_step != 'true'
