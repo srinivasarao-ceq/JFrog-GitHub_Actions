@@ -1,6 +1,7 @@
 name: Jfrog integrate with GitHub actions
 on:
-  workflow_dispatch
+  push:
+  workflow_dispatch:
 
 env:
   aws-region: ap-southeast-1
@@ -38,21 +39,17 @@ jobs:
       - name: Run JFrog Scan
         id: jfrog-scan
         run: |
-          jf audit --watches "demo" --fail false
-      
-      - name: Check Vulnerabilities and Stop if Found
-        if: steps.jfrog-scan.outcome == 'failure'
-        run: exit 1  # You can replace this with the appropriate command to stop the workflow
+          jf audit --watches "demo"
+
   
-      
-      # - name: Check JFrog Scan Results
-      #   run: |
-      #     if grep -qE "Found [1-9][0-9]* IaC vulnerabilities" <<< "${{ steps.jfrog-scan.outputs.stdout }}"; then
-      #       echo "Found IaC vulnerabilities. Stopping Terraform plan."
-      #       exit 1
-      #     else
-      #       echo "No non-zero IaC vulnerabilities found. Proceeding with Terraform plan."
-      #     fi
+      - name: Check JFrog Scan Results
+        run: |
+          if grep -qE "Found [1-9][0-9]* IaC vulnerabilities" <<< "${{ steps.jfrog-scan.outputs }}"; then
+            echo "Found IaC vulnerabilities. Stopping Terraform plan."
+            exit 1
+          else
+            echo "No non-zero IaC vulnerabilities found. Proceeding with Terraform plan."
+          fi
 
 
       - name: Check for High Severity IaC Vulnerabilities
