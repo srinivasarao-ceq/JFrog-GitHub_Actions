@@ -1,0 +1,59 @@
+name: Jfrog integrate with GitHub actions
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  aws-region: ap-southeast-1
+
+jobs:
+  Jfrog-configuration:
+    runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.jfrog-scan.outputs.test }}
+    steps:
+      - name: configure Jfrog CLI
+        uses: jfrog/setup-jfrog-cli@v3
+        env:
+          # JFrog platform url (for example: https://acme.jfrog.io) 
+          JF_URL: ${{ secrets.JF_URL }}
+          
+          # Basic authentication credentials
+          JF_USER: ${{ secrets.JF_USER }}
+          JF_PASSWORD: ${{ secrets.JF_PASSWORD }}
+       
+      - name: AWS CLI configuration
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.aws-region }}
+      
+      - name: checkout the code
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Initialize Terraform
+        run: terraform init
+      
+      - name: Run JFrog Scan
+        id: jfrog-scan
+        run: |
+           jf audit --watches "demo" 
+
+
+  Check_vulnerabilities:
+    runs-on: ubuntu-latest
+    needs: jJfrog-configuration
+    steps:
+      - env:
+          OUTPUT1: ${{needs.Jfrog-configuration.outputs.output1}}
+        run: |
+          if grep qE "Found [1-9][0-9]* IaC vulnerabilities" "$OUTPUT1"; then
+            echo "Success: The word 'IaC vulnerabilities' was found in '$file'."
+            exit 1
+          else
+              echo "Failure: The word 'IaC vulnerabilities' was not found in '$file'."
+          fi
