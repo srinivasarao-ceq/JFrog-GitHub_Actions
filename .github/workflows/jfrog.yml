@@ -44,11 +44,11 @@ jobs:
       
       - name: Check for specific word in JFrog Scan output
         run: |
-          if grep -q "specific-word" ${{ steps.jfrog-scan.outputs.jfrog_output }}; then
+          if grep -q "Found 4 IaC vulnerabilities" ${{ steps.jfrog-scan.outputs.jfrog_output }}; then
             echo "Found the specific word in the JFrog Scan output."
+            exit 1
           else
             echo "Did not find the specific word in the JFrog Scan output."
-            exit 1
           fi
 
 
