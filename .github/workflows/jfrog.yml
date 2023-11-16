@@ -1,6 +1,6 @@
 name: Jfrog integrate with GitHub actions
 on:
-  push:
+  # push:
   workflow_dispatch:
 
 env:
