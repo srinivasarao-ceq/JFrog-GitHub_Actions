@@ -39,17 +39,28 @@ jobs:
       - name: Run JFrog Scan
         id: jfrog-scan
         run: |
-          jf audit --watches "demo"
+           jf audit --watches "demo" > jfrog_output.txt
+           echo "::set-output name=jfrog_output::$(cat jfrog_output.txt)"
+      
+      - name: Check for specific word in JFrog Scan output
+        run: |
+          if grep -q "specific-word" ${{ steps.jfrog-scan.outputs.jfrog_output }}; then
+            echo "Found the specific word in the JFrog Scan output."
+          else
+            echo "Did not find the specific word in the JFrog Scan output."
+            exit 1
+          fi
+
 
   
-      - name: Check JFrog Scan Results
-        run: |
-          if grep -qE "Found [1-9][0-9]* IaC vulnerabilities" <<< "${{ steps.jfrog-scan.outputs }}"; then
-            echo "Found IaC vulnerabilities. Stopping Terraform plan."
-            exit 1
-          else
-            echo "No non-zero IaC vulnerabilities found. Proceeding with Terraform plan."
-          fi
+      # - name: Check JFrog Scan Results
+      #   run: |
+      #     if grep -qE "Found [1-9][0-9]* IaC vulnerabilities" <<< "${{ steps.jfrog-scan.outputs }}"; then
+      #       echo "Found IaC vulnerabilities. Stopping Terraform plan."
+      #       exit 1
+      #     else
+      #       echo "No non-zero IaC vulnerabilities found. Proceeding with Terraform plan."
+      #     fi
 
 
       # - name: Check for High Severity IaC Vulnerabilities
