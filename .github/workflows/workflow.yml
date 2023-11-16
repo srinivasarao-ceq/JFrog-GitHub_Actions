@@ -41,7 +41,7 @@ jobs:
       - name: Run JFrog Scan
         id: jfrog-scan
         run: |
-           jf audit --watches "demo" >> "$GITHUB_OUTPUT"
+           jf audit --watches "demo" > "$GITHUB_OUTPUT"
     
            
 
