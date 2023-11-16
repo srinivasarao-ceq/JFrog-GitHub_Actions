@@ -50,13 +50,13 @@ jobs:
     steps:
       - env:
           OUTPUT1: ${{needs.Jfrog-configuration.outputs.output1}}
-        run: |
-          if [ -f "$OUTPUT1" ]; then
-            if grep -q "High/Medium" "$OUTPUT1"; then
-                echo "Success: The word 'High/Medium' was found in '$OUTPUT1'."
-            else
-                echo "Failure: The word 'High/Medium' was not found in '$OUTPUT1'."
-            fi
-          else
-              echo "Failure: The file '$OUTPUT1' does not exist."
-          fi
+        run:  echo "$OUTPUT1"
+          # if [ -f "$OUTPUT1" ]; then
+          #   if grep -q "High/Medium" "$OUTPUT1"; then
+          #       echo "Success: The word 'High/Medium' was found in '$OUTPUT1'."
+          #   else
+          #       echo "Failure: The word 'High/Medium' was not found in '$OUTPUT1'."
+          #   fi
+          # else
+          #     echo "Failure: The file '$OUTPUT1' does not exist."
+          # fi
